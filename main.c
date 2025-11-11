@@ -31,10 +31,10 @@
 #include "pico/stdlib.h"
 #include "tusb.h"
 #include "pico/bootrom.h"
-#include "hardware/flash.h"
-#include "hardware/sync.h"
-#include "src/util.h"
-#include "src/hid.h"
+
+#include "lib/util.h"
+#include "lib/hid.h"
+#include "lib/flash.h"
 
 #include "usb_descriptors.h"
 
@@ -53,26 +53,13 @@ enum  {
   BLINK_SUSPENDED = 2500,
 };
 
-#define BUTTON_PIN 15
-#define BOOTLOADER_BUTTON_PIN 21
-#define TEST_PIN 16
 
-#define FLASH_TARGET_OFFSET (1024 * 1023) // Offset to use for writing data in flash
-
-typedef struct{
-  uint8_t layout[61];
-  uint8_t version;
-}keyboard_config_t;
 
 static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
 
-keyboard_config_t keyboard_config;
 
 void led_blinking_task(void);
 void hid_task(void);
-void save_keyboard_config();
-void load_keyboard_config();
-void test_pin_ctl(bool state);
 
 /*------------- MAIN -------------*/
 int main(void)
@@ -90,6 +77,8 @@ int main(void)
   gpio_init(TEST_PIN);
   gpio_set_dir(TEST_PIN, GPIO_OUT);
   gpio_put(TEST_PIN, 0);
+  
+  uart_init_custom();
   
   load_keyboard_config();
 
@@ -111,6 +100,8 @@ int main(void)
     
     hid_task();
     
+    printf("UART Test: Keyboard Config Version: %d\r\n", keyboard_config.version);
+    
     // Enter bootloader if BOOTLOADER_BUTTON_PIN is pressed
     // if (!gpio_get(BOOTLOADER_BUTTON_PIN)) {
     //   enter_bootloader();
@@ -122,30 +113,6 @@ int main(void)
 
 
 
-void test_pin_ctl(bool state)
-{
-  gpio_put(TEST_PIN, state ? 1 : 0);
-}
-
-void load_keyboard_config()
-{
-  memcpy(&keyboard_config, (const void*)(XIP_BASE + FLASH_TARGET_OFFSET), sizeof(keyboard_config));
-  if (keyboard_config.version != 1)
-  {
-    // set default layout
-    memset(&keyboard_config, 0, sizeof(keyboard_config));
-    // keyboard_config.version = 1;
-  }
-}
-
-void save_keyboard_config()
-{
-  // keyboard_config.version = 1;
-  uint32_t interrupts = save_and_disable_interrupts();
-  flash_range_erase(FLASH_TARGET_OFFSET, FLASH_SECTOR_SIZE);
-  flash_range_program(FLASH_TARGET_OFFSET, (const uint8_t*)&keyboard_config, sizeof(keyboard_config));
-  restore_interrupts(interrupts);
-}
 
 //--------------------------------------------------------------------+
 // Device callbacks
@@ -218,6 +185,8 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTCTRL,  keycode);
         has_keyboard_key = true;
         keyboard_config.version +=1;
+        printf("Keyboard Config Version Updated to %d\r\n", keyboard_config.version);
+        save_keyboard_config();
       }
       else
       {

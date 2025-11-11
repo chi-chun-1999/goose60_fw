@@ -36,11 +36,11 @@ project(goose60_fw C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-pico_enable_stdio_uart(goose60_fw 0)
+pico_enable_stdio_uart(goose60_fw 1)
 pico_enable_stdio_usb(goose60_fw 1)
 
 # Add source files in src/ directory
-file(GLOB_RECURSE SRC_FILES src/*.c)
+file(GLOB_RECURSE SRC_FILES lib/*.c)
 target_sources(goose60_fw PUBLIC ${SRC_FILES})
 
 
