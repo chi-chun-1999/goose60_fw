@@ -25,12 +25,16 @@ void hid_task(void)
   // Poll every 10ms
   const uint32_t interval_ms = 10;
   static uint32_t start_ms = 0;
+  uint8_t keycode_buffer[6] = {0};
+  uint8_t keycode_count = 0;
+  uint8_t modifier = 0;
 
   if ( board_millis() - start_ms < interval_ms) return; // not enough time
   start_ms += interval_ms;
 
   uint32_t const btn = board_button_read();
-  bool const button_state = !gpio_get(BUTTON_PIN); // active low
+  // bool const button_state = !gpio_get(BUTTON_PIN); // active low
+  keyboard_scan_task(&modifier, keycode_buffer, &keycode_count);
 
   // Remote wakeup
   if ( tud_suspended() && btn )
@@ -39,18 +43,19 @@ void hid_task(void)
     // and REMOTE_WAKEUP feature is enabled by host
     tud_remote_wakeup();
   }
-  else if(button_state){
+  else if(keycode_count > 0){
     // Send next report
-    send_hid_report(REPORT_ID_KEYBOARD, 3);
+    send_hid_report(REPORT_ID_KEYBOARD, 1, keycode_buffer);
   }
   else
   {
+    
     // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-    send_hid_report(REPORT_ID_KEYBOARD, btn);
+    send_hid_report(REPORT_ID_KEYBOARD, btn, keycode_buffer);
   }
 }
 
-void send_hid_report(uint8_t report_id, uint32_t btn)
+void send_hid_report(uint8_t report_id, uint32_t btn, uint8_t *keycode_buffer)
 {
   // skip if hid is not ready yet
   if ( !tud_hid_ready() ) return;
@@ -64,10 +69,9 @@ void send_hid_report(uint8_t report_id, uint32_t btn)
 
       if ( btn == 1 )
       {
-        uint8_t keycode[6] = { 0 };
-        keycode[0] = HID_KEY_A;
-
-        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
+        keycode_buffer[1] = HID_KEY_CONTROL_LEFT;
+        
+        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode_buffer);
         has_keyboard_key = true;
       }
       else if (btn ==2){
@@ -80,12 +84,14 @@ void send_hid_report(uint8_t report_id, uint32_t btn)
       else if (btn==3){
         //send ctrl+c
         uint8_t keycode[6] = { 0 };
-        keycode[0] = HID_KEY_C;
-        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTCTRL,  keycode);
+        keycode[0] = HID_KEY_1;
+        // tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTCTRL,  keycode);
+        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTSHIFT, keycode);
         has_keyboard_key = true;
-        keyboard_config.version +=1;
-        printf("Keyboard Config Version Updated to %d\r\n", keyboard_config.version);
-        save_keyboard_config();
+        printf("Keyboard value: %x\r\n", keymaps[0][4][2]);
+        // keyboard_config.version +=1;
+        // printf("Keyboard Config Version Updated to %d\r\n", keyboard_config.version);
+        // save_keyboard_config();
       }
       else
       {
@@ -167,12 +173,12 @@ void tud_hid_report_complete_cb(uint8_t instance, uint8_t const* report, uint16_
   (void) instance;
   (void) len;
 
-  uint8_t next_report_id = report[0] + 1u;
+  // uint8_t next_report_id = report[0] + 1u;
 
-  if (next_report_id < REPORT_ID_COUNT)
-  {
-    send_hid_report(next_report_id, board_button_read());
-  }
+  // if (next_report_id < REPORT_ID_COUNT)
+  // {
+  //   send_hid_report(next_report_id, board_button_read());
+  // }
 }
 
 // Invoked when received GET_REPORT control request

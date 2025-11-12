@@ -35,6 +35,7 @@
 #include "util.h"
 #include "flash.h"
 #include "tud_cb.h"
+#include "keyboard.h"
 
 
 #include "usb_descriptors.h"
@@ -66,6 +67,8 @@ int main(void)
   uart_init_custom();
   
   load_keyboard_config();
+  
+  keyboard_init();
 
   // init device stack on configured roothub port
   tud_init(BOARD_TUD_RHPORT);
@@ -85,7 +88,7 @@ int main(void)
     
     hid_task();
     
-    printf("UART Test: Keyboard Config Version: %d\r\n", keyboard_config.version);
+    // printf("UART Test: Keyboard Config Version: %d\r\n", keyboard_config.version);
     
     // Enter bootloader if BOOTLOADER_BUTTON_PIN is pressed
     // if (!gpio_get(BOOTLOADER_BUTTON_PIN)) {
