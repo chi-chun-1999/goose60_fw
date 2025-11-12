@@ -40,22 +40,24 @@ pico_enable_stdio_uart(goose60_fw 1)
 pico_enable_stdio_usb(goose60_fw 1)
 
 # Add source files in src/ directory
-file(GLOB_RECURSE SRC_FILES lib/*.c)
-target_sources(goose60_fw PUBLIC ${SRC_FILES})
+# file(GLOB_RECURSE SRC_FILES lib/*.c)
+# target_sources(goose60_fw PUBLIC ${SRC_FILES})
+
+add_subdirectory(lib)
 
 
 target_sources(goose60_fw PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/main.c
-        ${CMAKE_CURRENT_LIST_DIR}/usb_descriptors.c
+        # ${CMAKE_CURRENT_LIST_DIR}/usb_descriptors.c
         )
 
 # Make sure TinyUSB can find tusb_config.h
-target_include_directories(goose60_fw PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR})
+# target_include_directories(goose60_fw PUBLIC
+#         ${CMAKE_CURRENT_LIST_DIR})
 
 # In addition to pico_stdlib required for common PicoSDK functionality, add dependency on tinyusb_device
 # for TinyUSB device support and tinyusb_board for the additional board support library used by the example
-target_link_libraries(goose60_fw PUBLIC pico_stdlib pico_unique_id tinyusb_device tinyusb_board)
+target_link_libraries(goose60_fw PUBLIC pico_stdlib pico_unique_id tinyusb_device tinyusb_board gooselib)
 
 # Uncomment this line to enable fix for Errata RP2040-E5 (the fix requires use of GPIO 15)
 #target_compile_definitions(goose60_fw PUBLIC PICO_RP2040_USB_DEVICE_ENUMERATION_FIX=1)

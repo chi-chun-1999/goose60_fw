@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "stdlib.h": "c",
-        "board_api.h": "c"
+        "board_api.h": "c",
+        "tusb.h": "c"
     }
 }

@@ -26,6 +26,6 @@ get_script_dir()
 # In the following python code, I build the python virtual environment and install hidapi library. 
 # Here is hidapi library link: https://pypi.org/project/hidapi/
 # In the following code, I use the python executable located at ~/project/keyboard/bin/python3. Please modify it to your own python executable path.
-sudo ~/project/keyboard/bin/python3 $(get_script_dir)/script/pc2pico.py
+sudo ~/project/keyboard/bin/python3 $(get_script_dir)/pc2pico.py
 sleep 1
-picotool load -v -x $(get_script_dir)/build/goose60_fw.uf2 -f
+picotool load -v -x $(get_script_dir)/../build/goose60_fw.uf2 -f
