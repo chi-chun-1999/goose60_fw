@@ -9,6 +9,16 @@
 #include "config.h"
 
 #define KC_NO HID_KEY_NONE
+#define CTRL_MASK 0x10
+#define SHIFT_MASK 0x20
+#define ALT_MASK 0x40
+#define GUI_MASK 0x80
+
+#define FN_MASK 0xF0
+#define FN_KEY 0xFF
+#define FN_ROW 4 // Row index for Fn key
+#define FN_COL 13 // Column index for Fn key
+
 
 #define LAYOUT_goose60(\
     K00, K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, K0B, K0C, K0D, \

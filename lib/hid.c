@@ -43,9 +43,18 @@ void hid_task(void)
     // and REMOTE_WAKEUP feature is enabled by host
     tud_remote_wakeup();
   }
-  else if(keycode_count > 0){
-    // Send next report
-    send_hid_report(REPORT_ID_KEYBOARD, 1, keycode_buffer);
+  // if(modifier == 0 && keycode_count > 0){
+  //   // Send next report
+  //   send_hid_report(REPORT_ID_KEYBOARD, 1, keycode_buffer);
+  // }
+  if (modifier != 0 || keycode_count > 0){
+    if (modifier != 0 && keycode_count > 0){
+      send_hid_report(REPORT_ID_KEYBOARD, modifier, keycode_buffer);
+    }
+    else if (modifier == 0){
+      // printf("Sending keycode\r\n");
+      send_hid_report(REPORT_ID_KEYBOARD, 1, keycode_buffer);
+    }
   }
   else
   {
@@ -69,8 +78,7 @@ void send_hid_report(uint8_t report_id, uint32_t btn, uint8_t *keycode_buffer)
 
       if ( btn == 1 )
       {
-        keycode_buffer[1] = HID_KEY_CONTROL_LEFT;
-        
+
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode_buffer);
         has_keyboard_key = true;
       }
@@ -79,6 +87,14 @@ void send_hid_report(uint8_t report_id, uint32_t btn, uint8_t *keycode_buffer)
         keycode[0] = HID_KEY_Z;
 
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode);
+        has_keyboard_key = true;
+      }
+      else if(btn == CTRL_MASK){
+        // uint8_t keycode[6] = { 0 };
+        printf("Sending CTRL\r\n");
+
+        // tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTCTRL, keycode_buffer);
+        tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, keycode_buffer);
         has_keyboard_key = true;
       }
       else if (btn==3){
