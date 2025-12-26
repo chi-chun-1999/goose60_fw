@@ -104,7 +104,7 @@ void send_hid_report(uint8_t report_id, uint32_t btn, uint8_t *keycode_buffer)
         // tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTCTRL,  keycode);
         tud_hid_keyboard_report(REPORT_ID_KEYBOARD, KEYBOARD_MODIFIER_LEFTSHIFT, keycode);
         has_keyboard_key = true;
-        printf("Keyboard value: %x\r\n", keymaps[0][4][2]);
+        // printf("Keyboard value: %x\r\n", keymaps[0][4][2]);
         // keyboard_config.version +=1;
         // printf("Keyboard Config Version Updated to %d\r\n", keyboard_config.version);
         // save_keyboard_config();

@@ -35,10 +35,11 @@
 // 
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 14
+#define KEYBOARD_LAYER 2
 
 #define MATRIX_ROW_PINS { GP0, GP1, GP2, GP3, GP4 }
-//ROW                     1    2    3    4    5
+//                ROW     1    2    3    4    5
 #define MATRIX_COL_PINS { GP5, GP6, GP7, GP8, GP9, GP10, GP11, GP12, GP13, GP14, GP15, GP20, GP21, GP22 }
-//COL                     1    2    3    4    5     6     7     8     9     10    11    12    13   14
+//                COL     1    2    3    4    5     6     7     8     9     10    11    12    13   14
 
 

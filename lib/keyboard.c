@@ -1,7 +1,7 @@
 #include "keyboard.h"
 
 
-const uint8_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+uint8_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      /*
      * ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐
      * │ ` │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ Backsp│
@@ -96,7 +96,7 @@ void keyboard_scan_task(uint8_t* modifier, uint8_t *keycode_buffer, uint8_t* key
                                                                               // 
     if (fn_pressed) {
         layer = 1; // Switch to layer 1 when FN is pressed
-        printf("FN key pressed, switching to layer 1\r\n");
+        // printf("FN key pressed, switching to layer 1\r\n");
     }
     else{
         layer = 0; // Default layer
@@ -129,17 +129,6 @@ void keyboard_scan_task(uint8_t* modifier, uint8_t *keycode_buffer, uint8_t* key
                     continue; // No key assigned to this position
                 }
                                                         // 
-                // if (keycode == HID_KEY_CONTROL_LEFT || keycode == HID_KEY_CONTROL_RIGHT) {
-                //     *modifier |= CTRL_MASK;
-                // } else if (keycode == HID_KEY_SHIFT_LEFT || keycode == HID_KEY_SHIFT_RIGHT) {
-                //     *modifier |= SHIFT_MASK;
-                // } else if (keycode == HID_KEY_ALT_LEFT || keycode == HID_KEY_ALT_RIGHT) {
-                //     *modifier |= ALT_MASK;
-                // } else if (keycode == HID_KEY_GUI_LEFT || keycode == HID_KEY_GUI_RIGHT) {
-                //     *modifier |= GUI_MASK;
-                // }
-                
-                // printf("Keycode pressed: %x\r\n", keycode);
 
                 // Key at (row, col) is pressed
                 // Handle key press event

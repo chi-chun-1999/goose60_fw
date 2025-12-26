@@ -34,7 +34,7 @@
     { K40, K41, K42, KC_NO, KC_NO, KC_NO, K46, KC_NO, KC_NO, KC_NO, K4A, K4B, K4C, K4D }  \
 }
 
-extern const uint8_t keymaps[][MATRIX_ROWS][MATRIX_COLS];
+extern uint8_t keymaps[][MATRIX_ROWS][MATRIX_COLS];
 
 void keyboard_init(void);
 void keyboard_scan_task(uint8_t* modifier, uint8_t *keycode_buffer, uint8_t* keycode_count);

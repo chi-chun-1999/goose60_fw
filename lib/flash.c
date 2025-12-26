@@ -6,6 +6,15 @@ keyboard_config_t keyboard_config;
 void load_keyboard_config()
 {
   memcpy(&keyboard_config, (const void*)(XIP_BASE + FLASH_TARGET_OFFSET), sizeof(keyboard_config));
+  
+  
+  for (int layer=0; layer<KEYBOARD_LAYER; layer++){
+    for (int row=0; row<MATRIX_ROWS; row++){
+      for (int col=0; col<MATRIX_COLS; col++){
+        keyboard_config.layout[layer][row][col] = keymaps[layer][row][col];
+      }
+    }
+  }
 //   if (keyboard_config.version != 1)
 //   {
 //     // set default layout
